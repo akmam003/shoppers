@@ -15,7 +15,7 @@ include "./templates/top.php";
 
     <?php include "./templates/sidebar.php"; ?>
 
-
+<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
 
 <h2>Other Admins</h2>
       <div class="table-responsive">
