@@ -96,6 +96,42 @@ if(empty($f_name) || empty($l_name) || empty($email) || empty($password) || empt
 		";
 		exit();
 	}
+	//existing email address in our database
+	$sql = "SELECT user_id FROM user_info WHERE email = '$email' LIMIT 1" ;
+	$check_query = mysqli_query($con,$sql);
+	$count_email = mysqli_num_rows($check_query);
+	if($count_email > 0){
+		echo "
+			<div class='alert alert-danger'>
+				<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+				<b>Email Address is already available Try Another email address</b>
+			</div>
+		";
+		exit();
+	} else {
+		$password = md5($password);
+		$sql = "INSERT INTO `user_info` 
+		(`user_id`, `first_name`, `last_name`, `email`, 
+		`password`, `mobile`, `address1`, `address2`) 
+		VALUES (NULL, '$f_name', '$l_name', '$email', 
+		'$password', '$mobile', '$address1', '$address2')";
+		$run_query = mysqli_query($con,$sql);
+		$_SESSION["uid"] = mysqli_insert_id($con);
+		$_SESSION["name"] = $f_name;
+		$ip_add = getenv("REMOTE_ADDR");
+		$sql = "UPDATE cart SET user_id = '$_SESSION[uid]' WHERE ip_add='$ip_add' AND user_id = -1";
+		if(mysqli_query($con,$sql)){
+			echo "register_success";
+			exit();
+		}
+	}
+	}
+	
+}
+
+
+
+?>
 	
 
 
