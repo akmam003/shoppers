@@ -83,3 +83,99 @@ if(isset($_POST["getProduct"])){
 		}
 	}
 }
+if(isset($_POST["get_seleted_Category"]) || isset($_POST["selectBrand"]) || isset($_POST["search"])){
+	if(isset($_POST["get_seleted_Category"])){
+		$id = $_POST["cat_id"];
+		$sql = "SELECT * FROM products WHERE product_cat = '$id'";
+	}else if(isset($_POST["selectBrand"])){
+		$id = $_POST["brand_id"];
+		$sql = "SELECT * FROM products WHERE product_brand = '$id'";
+	}else {
+		$keyword = $_POST["keyword"];
+		$sql = "SELECT * FROM products WHERE product_keywords LIKE '%$keyword%'";
+	}
+	
+	$run_query = mysqli_query($con,$sql);
+	while($row=mysqli_fetch_array($run_query)){
+			$pro_id    = $row['product_id'];
+			$pro_cat   = $row['product_cat'];
+			$pro_brand = $row['product_brand'];
+			$pro_title = $row['product_title'];
+			$pro_price = $row['product_price'];
+			$pro_image = $row['product_image'];
+			echo "
+				<div class='col-md-4'>
+							<div class='panel panel-info'>
+								<div class='panel-heading'>$pro_title</div>
+								<div class='panel-body'>
+									<img src='product_images/$pro_image' style='width:160px; height:250px;'/>
+								</div>
+								<div class='panel-heading'>$.$pro_price.00
+									<button pid='$pro_id' style='float:right;' id='product' class='btn btn-danger btn-xs'>AddToCart</button>
+								</div>
+							</div>
+						</div>	
+			";
+		}
+	}
+	
+if(isset($_POST["addToCart"])){
+		
+
+	$p_id = $_POST["proId"];
+		
+
+	if(isset($_SESSION["uid"])){
+
+	$user_id = $_SESSION["uid"];
+
+	$sql = "SELECT * FROM cart WHERE p_id = '$p_id' AND user_id = '$user_id'";
+	$run_query = mysqli_query($con,$sql);
+	$count = mysqli_num_rows($run_query);
+	if($count > 0){
+		echo "
+			<div class='alert alert-warning'>
+					<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+					<b>Product is already added into the cart Continue Shopping..!</b>
+			</div>
+		";//not in video
+	} else {
+		$sql = "INSERT INTO `cart`
+		(`p_id`, `ip_add`, `user_id`, `qty`) 
+		VALUES ('$p_id','$ip_add','$user_id','1')";
+		if(mysqli_query($con,$sql)){
+			echo "
+				<div class='alert alert-success'>
+					<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+					<b>Product is Added..!</b>
+				</div>
+			";
+		}
+	}
+	}else{
+		$sql = "SELECT id FROM cart WHERE ip_add = '$ip_add' AND p_id = '$p_id' AND user_id = -1";
+		$query = mysqli_query($con,$sql);
+		if (mysqli_num_rows($query) > 0) {
+			echo "
+				<div class='alert alert-warning'>
+				<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+							<b>Product is already added into the cart Continue Shopping..!</b>
+				</div>";
+				exit();
+		}
+		$sql = "INSERT INTO `cart`
+		(`p_id`, `ip_add`, `user_id`, `qty`) 
+		VALUES ('$p_id','$ip_add','-1','1')";
+		if (mysqli_query($con,$sql)) {
+			echo "
+				<div class='alert alert-success'>
+					<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+					<b>Your product is Added Successfully..!</b>
+				</div>
+			";
+			exit();
+		}
+			
+	}
+			
+}
