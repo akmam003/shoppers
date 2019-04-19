@@ -6,34 +6,6 @@ if(isset($_SESSION["uid"])){
 ?>
 <!DOCTYPE html>
 <html>
-<style>
-	
-	.panel-body{
-		background-color:#3c763d9e!important;
-
-	}
-	.navbar-brand{
-		color: red!important;
-		font-size: 40px!important;
-		font-style: bold;
-	}
-	#collapse{
-		background-color:black!important;
-
-	}
-	.active{
-		background-color: green!important;
-	}
-.a{
-	background-color: #6A5ACD!important;
-}
-.category .a{
-	color: black;
-}
-a{
-	color: black!important;
-
-}
 <html>
 	<head>
 		<meta charset="UTF-8">
